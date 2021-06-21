@@ -1,0 +1,5 @@
+name: PvpToggle
+version: ${project.version}
+main: dev.stan.pvptoggle.PvpToggle
+api-version: 1.17
+description: A simple PVP toggle plugin for any minecraft server
