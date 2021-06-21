@@ -1,9 +1,11 @@
 package dev.stan.pvptoggle;
 
+import dev.stan.pvptoggle.commands.HelpCMD;
 import dev.stan.pvptoggle.listeners.PvpListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -21,13 +23,9 @@ public final class PvpToggle extends JavaPlugin {
         // Plugin startup logic
         getLogger().info("Plugin successfully enabled");
 
+        getCommand("pvp help").setExecutor((CommandExecutor) new HelpCMD());
         getServer().getPluginManager().registerEvents((Listener) new PvpListener(this), this);
 
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
     }
 
     // Contains info whether pvp for player is on or off
@@ -68,8 +66,11 @@ public final class PvpToggle extends JavaPlugin {
 
                 if (args[0].contains(p.toString())) {
 
-                    // Change pvp for args player
-                    status.put(p.getUniqueId(), false);
+                    if (player.hasPermission("pvp.toggle.other") || player.hasPermission("pvp.admin")) {
+
+                        // Change pvp for args player
+                        status.put(p.getUniqueId(), false);
+                    }
                 } else {
 
                     // Change pvp for command sender

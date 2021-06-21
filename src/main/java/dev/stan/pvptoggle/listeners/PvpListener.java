@@ -1,10 +1,12 @@
 package dev.stan.pvptoggle.listeners;
 
 import dev.stan.pvptoggle.PvpToggle;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class PvpListener {
@@ -16,16 +18,21 @@ public class PvpListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onTestEntityDamage(final EntityDamageEvent e) {
+    public void onEntityDamage(final EntityDamageByEntityEvent e) {
 
-        if (!(e.getEntity() instanceof Player)) return;
-        Player player = (Player) e.getEntity();
+        // Check if attacker and damager and Players if not return if yes declare vars
+        if (!(e.getEntity() instanceof Player) && !(e.getDamager() instanceof Player)) return;
+        Player defender = (Player) e.getEntity();
+        Player damager = (Player) e.getDamager();
 
-        // Do nothing if player has pvp enabled
-        if (plugin.status.get(player.getUniqueId())) return;
-        // If pvp is disabled cancel damage event
-        else {
+        // Do nothing if defender and damager has pvp enabled
+        if (plugin.status.get(defender.getUniqueId()) && (plugin.status.get(damager.getUniqueId()))) return;
+        // If defender has pvp disabled do some shti
+        if (!plugin.status.get(defender.getUniqueId())) {
+
+            // Cancel event and throw error to attacker
             e.setCancelled(true);
+            damager.sendMessage(ChatColor.RED.getName() + defender.getName() + "has PVP disabled, you cannot attack him.");
         }
     }
 }
